@@ -1,0 +1,20 @@
+`timescale 1ns/1ps
+module tb_debounce;
+    reg clk, reset, noisy;
+    wire clean;
+
+    debounce uut(clk, reset, noisy, clean);
+
+    always #5 clk = ~clk;
+
+    initial begin
+        $dumpfile("debounce.vcd"); $dumpvars(0, tb_debounce);
+        clk = 0; reset = 1;
+        #10 reset = 0;
+
+        noisy = 0; #30;
+        noisy = 1; #10; noisy = 0; #10;
+        noisy = 1; #200;
+        $finish;
+    end
+endmodule
