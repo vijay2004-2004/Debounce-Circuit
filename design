@@ -1,0 +1,24 @@
+module debounce (
+    input clk, reset, noisy,
+    output reg clean
+);
+    reg [15:0] count;
+    reg sync;
+
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            count <= 0;
+            clean <= 0;
+            sync <= 0;
+        end else begin
+            sync <= noisy;
+            if (sync == clean)
+                count <= 0;
+            else begin
+                count <= count + 1;
+                if (count == 16'hFFFF)
+                    clean <= sync;
+            end
+        end
+    end
+endmodule
